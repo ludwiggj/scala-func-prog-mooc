@@ -12,12 +12,12 @@ package object common {
    */
   type *** = Any
 
-  
+
   /**
    * Get a child of a file. For example,
-   * 
+   *
    *   subFile(homeDir, "b", "c")
-   * 
+   *
    * corresponds to ~/b/c
    */
   def subFile(file: File, children: String*) = {
@@ -31,7 +31,7 @@ package object common {
   def resourceAsStreamFromSrc(resourcePath: List[String]): Option[java.io.InputStream] = {
     val classesDir = new File(getClass.getResource(".").toURI)
     val projectDir = classesDir.getParentFile.getParentFile.getParentFile.getParentFile
-    val resourceFile = subFile(projectDir, ("src" :: "main" :: "resources" :: resourcePath): _*)
+    val resourceFile = subFile(projectDir, ("wk_6_forcomp" :: "src" :: "main" :: "resources" :: resourcePath): _*)
     if (resourceFile.exists)
       Some(new java.io.FileInputStream(resourceFile))
     else
