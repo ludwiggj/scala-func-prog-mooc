@@ -47,41 +47,41 @@ class FunSetSuite extends FunSuite {
     assert(1 + 2 === 3)
   }
 
-  
+
   import FunSets._
 
   test("contains is implemented") {
     assert(contains(x => true, 100))
   }
-  
+
   test("contains set of all negative numbers") {
     def largerThanZero(x: Int) = x > 0
     expectResult(false) { (contains(largerThanZero, -1)) }
     expectResult(false) { contains(largerThanZero, 0) }
     expectResult(true) { contains(largerThanZero, 1) }
   }
-  
+
   /**
    * When writing tests, one would often like to re-use certain values for multiple
    * tests. For instance, we would like to create an Int-set and have multiple test
    * about it.
-   * 
+   *
    * Instead of copy-pasting the code for creating the set into every test, we can
    * store it in the test class using a val:
-   * 
+   *
    *   val s1 = singletonSet(1)
-   * 
+   *
    * However, what happens if the method "singletonSet" has a bug and crashes? Then
    * the test methods are not even executed, because creating an instance of the
    * test class fails!
-   * 
+   *
    * Therefore, we put the shared values into a separate trait (traits are like
    * abstract classes), and create an instance inside each test method.
-   * 
+   *
    */
 
   trait TestSets {
-    val s1 = singletonSet(1)   
+    val s1 = singletonSet(1)
     val s2 = singletonSet(2)
     val s3 = singletonSet(3)
     val s12 = (x: Int) => (x == 1) || (x == 2)
@@ -98,15 +98,15 @@ class FunSetSuite extends FunSuite {
   /**
    * This test is currently disabled (by using "ignore") because the method
    * "singletonSet" is not yet implemented and the test would fail.
-   * 
+   *
    * Once you finish your implementation of "singletonSet", exchange the
    * function "ignore" by "test".
    */
   test("singletonSet(1) contains 1") {
-    
+
     /**
      * We create a new instance of the "TestSets" trait, this gives us access
-     * to the values "s1" to "s3". 
+     * to the values "s1" to "s3".
      */
     new TestSets {
       /**
@@ -114,6 +114,21 @@ class FunSetSuite extends FunSuite {
        * the test fails. This helps identifying which assertion failed.
        */
       assert(contains(s1, 1), "Singleton")
+    }
+  }
+
+  test("singletonSet(1) does not contain 2") {
+
+    /**
+     * We create a new instance of the "TestSets" trait, this gives us access
+     * to the values "s1" to "s3".
+     */
+    new TestSets {
+      /**
+       * The string argument of "assert" is a message that is printed in case
+       * the test fails. This helps identifying which assertion failed.
+       */
+      assert(! contains(s1, 2), "Singleton")
     }
   }
 
@@ -125,7 +140,7 @@ class FunSetSuite extends FunSuite {
       assert(!contains(s, 3), "Union 3")
     }
   }
-  
+
   test("union of set and empty set is the set itself") {
     new TestSets {
       val s = union(s1, mtSet)
@@ -134,7 +149,7 @@ class FunSetSuite extends FunSuite {
       assert(!contains(s, 3), "Union mt 3")
     }
   }
-  
+
   test("union of empty set and set is the set itself") {
     new TestSets {
       val s = union(mtSet, s1)
@@ -143,7 +158,7 @@ class FunSetSuite extends FunSuite {
       assert(!contains(s, 3), "mt Union 3")
     }
   }
-  
+
   test("intersection contains set of all elements that are in both sets") {
     new TestSets {
       val s12_Intersect_s13 = intersect(s12, s13) // Common element is 1
@@ -152,7 +167,7 @@ class FunSetSuite extends FunSuite {
       assert(!contains(s12_Intersect_s13, 3), "Intersect 3")
     }
   }
-  
+
   test("intersection of set and empty set is the empty set") {
     new TestSets {
       val s = intersect(s1, mtSet)
@@ -161,7 +176,7 @@ class FunSetSuite extends FunSuite {
       assert(!contains(s, 3), "Intersect mt 3")
     }
   }
-  
+
   test("intersection of empty set and set is the empty set") {
     new TestSets {
       val s = intersect(mtSet, s1)
@@ -170,7 +185,7 @@ class FunSetSuite extends FunSuite {
       assert(!contains(s, 3), "mt Intersect 3")
     }
   }
-  
+
   test("diff of s, t contains set of all elements that are in s but not in t") {
     new TestSets {
       val s12_Diff_s13 = diff(s12, s13) // Remaining element is 2
@@ -179,7 +194,7 @@ class FunSetSuite extends FunSuite {
       assert(!contains(s12_Diff_s13, 3), "Diff 3")
     }
   }
-  
+
   test("diff of set and the empty set is the set itself") {
     new TestSets {
       val s = diff(s12, mtSet)
@@ -188,7 +203,7 @@ class FunSetSuite extends FunSuite {
       assert(!contains(s, 3), "Diff mt 3")
     }
   }
-  
+
   test("diff of empty set and the set is the empty set") {
     new TestSets {
       val s = diff(mtSet, s12)
@@ -197,9 +212,9 @@ class FunSetSuite extends FunSuite {
       assert(!contains(s, 3), "mt Diff 3")
     }
   }
-  
+
   test("filter set of numbers 1 to 5 to return even numbers") {
-    new TestSets {      
+    new TestSets {
       val evens1To5 = filter(s1To5, isEven)
       assert(!contains(evens1To5, 1), "1 is not even")
       assert(contains(evens1To5, 2), "2 is even")
@@ -210,9 +225,9 @@ class FunSetSuite extends FunSuite {
       assert(!contains(evens1To5, 6), "6 is outside range")
     }
   }
-  
+
    test("filter empty set returns empty set") {
-    new TestSets {      
+    new TestSets {
       val mtFiltered = filter(mtSet, isEven)
       assert(!contains(mtFiltered, 1), "mt filter 1")
       assert(!contains(mtFiltered, 2), "mt filter 2")
@@ -223,69 +238,69 @@ class FunSetSuite extends FunSuite {
       assert(!contains(mtFiltered, 6), "mt filter 6")
     }
    }
-    
+
    test("square of all numbers in range -1000 to 1000 is 1 million or less") {
      new TestSets {
-       val squareIsAMillionOrLess = (p: Int) => p * p <= 1000000       
+       val squareIsAMillionOrLess = (p: Int) => p * p <= 1000000
        assert(forall(identitySet, squareIsAMillionOrLess))
      }
    }
-   
+
    test("forall fails on first test") {
-     new TestSets {       
+     new TestSets {
        assert(!forall(identitySet, (x: Int) => x >= -999))
      }
    }
-   
+
    test("forall fails on last test") {
-     new TestSets {       
+     new TestSets {
        assert(!forall(identitySet, (x: Int) => x <= 999))
      }
    }
-   
+
    test("all numbers are odd") {
-     new TestSets {       
+     new TestSets {
        assert(forall(s_1_3_5, isOdd))
      }
    }
-   
-   test("all numbers are not odd") {
+
+   test("at least one even number") {
      new TestSets {
-       
+
        assert(!forall(s_1_5_10, isOdd))
      }
    }
-   
+
    test("for all is true for empty set") {
      new TestSets {
        assert(forall(mtSet, isOdd))
      }
    }
-   
+
    test("at least one odd number") {
-     new TestSets { 
+     new TestSets {
        assert(exists(s_1_3_5, isOdd))
      }
    }
-   
+
    test("no even numbers") {
-     new TestSets { 
+     new TestSets {
        assert(!exists(s_1_3_5, isEven))
      }
    }
-   
+
    test("another at least one odd number") {
-     new TestSets { 
+     new TestSets {
        assert(exists(s_1_5_10, isOdd))
      }
    }
-   
+
    test("at least one even number") {
-     new TestSets { 
+     new TestSets {
        assert(exists(s_1_5_10, isEven))
      }
    }
-   
+
    test("map each number between 1 and 5 to its double") {
      new TestSets {
        val newSet = map(s1To5, (x: Int) => 2 * x)
@@ -293,10 +308,10 @@ class FunSetSuite extends FunSuite {
        assert(contains(newSet,4))
        assert(contains(newSet,6))
        assert(contains(newSet,8))
-       assert(contains(newSet,10))      
+       assert(contains(newSet,10))
      }
    }
-   
+
    test("map each number between 1 and 5 to its cube") {
      new TestSets {
        val newSet = map(s1To5, (x: Int) => x * x * x)
@@ -304,10 +319,10 @@ class FunSetSuite extends FunSuite {
        assert(contains(newSet,8))
        assert(contains(newSet,27))
        assert(contains(newSet,64))
-       assert(contains(newSet,125))     
+       assert(contains(newSet,125))
      }
    }
-   
+
    test("map on empty set produces another empty set") {
      new TestSets {
        val newSet = map(mtSet, (x: Int) => 2 * x)
@@ -315,7 +330,7 @@ class FunSetSuite extends FunSuite {
        assert(!contains(newSet,4))
        assert(!contains(newSet,6))
        assert(!contains(newSet,8))
-       assert(!contains(newSet,10))      
+       assert(!contains(newSet,10))
      }
    }
 }

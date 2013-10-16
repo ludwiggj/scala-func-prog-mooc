@@ -1,9 +1,13 @@
-import main.week1.Logic
-def loop:Boolean = loop
+object Logic {
 
+  def loop:Boolean = loop
 
+  // and(x, y)
+  def and(x:Boolean, y: => Boolean) = if (x) y else false
 
+  // or(x, y)
+  def or(x:Boolean, y: => Boolean) = if (x) true else y
 
-
-Logic.and(false, loop)
-Logic.or(true, loop)
+  and(false, loop)
+  or(true, loop)
+}

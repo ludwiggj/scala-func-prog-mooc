@@ -1,8 +1,9 @@
 object sqrt_2 {
   def abs(x: Double) = if (x < 0) -x else x
 
+  // This time all relevant functions placed within sqrt, to avoid passing x around so much
   def sqrt(x: Double) = {
-    println("x [" + x + "] eps [" + 0.001 * x + "]")
+//    println("x [" + x + "] eps [" + 0.001 * x + "]")
 
     def isGoodEnough(guess: Double) = {
       abs(guess * guess - x) < (0.001 * x)
@@ -23,22 +24,6 @@ object sqrt_2 {
   }
 
   sqrt(2)
-
-
-
   sqrt(4)
-
-
-
-
-
-
-
-
-
-
   sqrt(1e-6)
-
-
-
 }

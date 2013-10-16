@@ -20,7 +20,7 @@ object FunSets {
   /**
    * Returns the set of the one given element.
    */
-  def singletonSet(elem: Int): Set = (x: Int) => (x == elem) 
+  def singletonSet(elem: Int): Set = (x: Int) => (x == elem)
 
   /**
    * Returns the union of the two given sets,
@@ -56,7 +56,7 @@ object FunSets {
   def forall(s: Set, p: Int => Boolean): Boolean = {
     def iter(a: Int): Boolean = {
       if (contains(s,a) && !p(a)) false
-      else if ((! contains(s,a) || (contains(s,a) && p(a)) ) && a == bound) true
+      else if (a == bound) true
       else iter(a + 1)
     }
     iter(-bound)
