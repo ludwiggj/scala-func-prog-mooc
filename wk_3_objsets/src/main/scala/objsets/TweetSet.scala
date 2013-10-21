@@ -10,7 +10,7 @@ import scala.language.postfixOps
 class Tweet(val user: String, val text: String, val retweets: Int) {
   override def toString: String =
     "User: " + user + " Text: " + text + " [" + retweets + "]\n"
-  
+
   def mostRetweeted(pretender: Tweet) = if (pretender.retweets > retweets) pretender else this
 }
 
@@ -18,7 +18,7 @@ class Tweet(val user: String, val text: String, val retweets: Int) {
  * This represents a set of objects of type `Tweet` in the form of a binary search
  * tree. Every branch in the tree has two children (two `TweetSet`s). There is an
  * invariant which always holds: for every branch `b`, all elements in the left
- * subtree are smaller than the tweet at `b`. The eleemnts in the right subtree are
+ * subtree are smaller than the tweet at `b`. The elements in the right subtree are
  * larger.
  *
  * Note that the above structure requires us to be able to compare two tweets (we
@@ -35,9 +35,17 @@ class Tweet(val user: String, val text: String, val retweets: Int) {
  *
  * [1] http://en.wikipedia.org/wiki/Binary_search_tree
  */
-abstract class TweetSet {
+abstract class TweetSet(var depth: Int) {
   def isEmpty: Boolean
-  
+
+  def spacer(depth:Int):String = {
+    var str = ""
+    for(i <- 0 until depth * 3) str += " "
+    str
+  }
+
+  def decreaseDepthBy(amount: Int): TweetSet
+
   /**
    * This method takes a predicate and returns a subset of all the elements
    * in the original set for which the predicate is true.
@@ -46,7 +54,7 @@ abstract class TweetSet {
    * and be implemented in the subclasses?
    */
   def filter(p: Tweet => Boolean): TweetSet = {
-    filterAcc(p, new Empty)
+    filterAcc(p, new Empty(0))
   }
 
   /**
@@ -87,7 +95,10 @@ abstract class TweetSet {
       if (set.isEmpty) list.reverse
       else {
         val mostPopularTweet = set.mostRetweeted
-        buildList(if (list.isEmpty) new Cons(mostPopularTweet, Nil) else new Cons(mostPopularTweet, list), set.remove(mostPopularTweet))
+        buildList(
+          if (list.isEmpty) new Cons(mostPopularTweet, Nil) else new Cons(mostPopularTweet, list),
+          set.remove(mostPopularTweet)
+        )
       }
     }
     buildList(Nil, this)
@@ -120,22 +131,24 @@ abstract class TweetSet {
   /**
    * This method takes a function and applies it to every element in the set.
    */
-  def foreach(f: Tweet => Unit): Unit  
+  def foreach(f: Tweet => Unit): Unit
 }
 
-class Empty extends TweetSet {
+class Empty(depth: Int) extends TweetSet(depth) {
 
   def isEmpty = true
-  
+
   def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = acc
 
   def union(that: TweetSet): TweetSet = that
-  
+
   def mostRetweeted: Tweet = throw new NoSuchElementException("cannot call mostRetweeted on Empty")
-  
+
   def getTweet: Tweet = throw new NoSuchElementException("cannot call getTweet on Empty")
 
-  override def toString() = "EMPTY"
+  override def toString() = spacer(depth) + "[" + depth + "] Empty"
+
+  def decreaseDepthBy(amount: Int): TweetSet = new Empty(depth - amount)
 
   /**
    * The following methods are already implemented
@@ -143,36 +156,40 @@ class Empty extends TweetSet {
 
   def contains(tweet: Tweet): Boolean = false
 
-  def incl(tweet: Tweet): TweetSet = new NonEmpty(tweet, new Empty, new Empty)
+  def incl(tweet: Tweet): TweetSet = new NonEmpty(tweet, new Empty(depth + 1), new Empty(depth + 1), depth)
 
-  def remove(tweet: Tweet): TweetSet = this
+  def remove(tweet: Tweet): TweetSet = this // Removing tweet from nothing returns nothing
 
-  def foreach(f: Tweet => Unit): Unit = ()
+  def foreach(f: Tweet => Unit): Unit = () // No implementation
 }
 
-class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
+class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet, depth: Int) extends TweetSet(depth) {
 
   def isEmpty = false
-  
+
   def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = {
     if (p(elem)) left.filterAcc(p, right.filterAcc(p, acc.incl(elem)))
     else left.filterAcc(p, right.filterAcc(p, acc))
   }
 
-  def union(that: TweetSet): TweetSet = left union (right union (that incl elem))
+  def union(that: TweetSet): TweetSet = left union right union (that incl elem)
 
   def mostRetweeted: Tweet = {
     def findMostRetweeted(currentMostRetweeted: Tweet): Tweet = {
-      val morePopularTweets = (left union right).filter(tw => tw.retweets > currentMostRetweeted.retweets)
+      val morePopularTweets = (left union right).filter {
+        _.retweets > currentMostRetweeted.retweets
+      }
       if (morePopularTweets.isEmpty) currentMostRetweeted else findMostRetweeted(morePopularTweets.getTweet)
     }
     findMostRetweeted(elem)
   }
-  
+
   def getTweet: Tweet = elem
 
-  override def toString() = elem.toString + "\n  " + left.toString + "\n  " + right.toString
+  override def toString() = spacer(depth) + "[" + depth + "] " + elem.toString + "\n[L]" + left.toString + "\n[R]" + right.toString
 
+  def decreaseDepthBy(amount: Int): TweetSet =
+    new NonEmpty(elem, left.decreaseDepthBy(amount), right.decreaseDepthBy(amount), depth - amount)
   /**
    * The following methods are already implemented
    */
@@ -183,21 +200,21 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     else true
 
   def incl(x: Tweet): TweetSet = {
-    if (x.text < elem.text) new NonEmpty(elem, left.incl(x), right)
-    else if (elem.text < x.text) new NonEmpty(elem, left, right.incl(x))
+    if (x.text < elem.text) new NonEmpty(elem, left.incl(x), right, depth)
+    else if (elem.text < x.text) new NonEmpty(elem, left, right.incl(x), depth)
     else this
   }
 
   def remove(tw: Tweet): TweetSet =
-    if (tw.text < elem.text) new NonEmpty(elem, left.remove(tw), right)
-    else if (elem.text < tw.text) new NonEmpty(elem, left, right.remove(tw))
-    else left.union(right)
+    if (tw.text < elem.text) new NonEmpty(elem, left.remove(tw), right, depth)
+    else if (elem.text < tw.text) new NonEmpty(elem, left, right.remove(tw), depth)
+    else (left union right) decreaseDepthBy(1) // omits elem
 
   def foreach(f: Tweet => Unit): Unit = {
     f(elem)
     left.foreach(f)
     right.foreach(f)
-  } 
+  }
 }
 
 trait TweetList {
@@ -209,7 +226,7 @@ trait TweetList {
       f(head)
       tail.foreach(f)
     }
-  
+
   def reverse: TweetList = {
       def reverseList(listToReverse: TweetList, reversedList: TweetList): TweetList = {
         if (listToReverse.isEmpty) reversedList
@@ -221,7 +238,7 @@ trait TweetList {
       }
       reverseList(this, Nil)
   }
-  
+
   override def toString = {
     val res = new StringBuilder
     this.foreach(res.append(_))
@@ -243,8 +260,10 @@ object GoogleVsApple {
   val google = List("android", "Android", "galaxy", "Galaxy", "nexus", "Nexus")
   val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
 
-  lazy val googleTweets: TweetSet = TweetReader.allTweets.filter(tw => google.exists(keyword => tw.text.contains(keyword)))
-  lazy val appleTweets: TweetSet = TweetReader.allTweets.filter(tw => apple.exists(keyword => tw.text.contains(keyword)))
+  val allTweets = TweetReader.allTweets
+
+  lazy val googleTweets: TweetSet = allTweets.filter(tw => google.exists(keyword => tw.text.contains(keyword)))
+  lazy val appleTweets: TweetSet = allTweets.filter(tw => apple.exists(keyword => tw.text.contains(keyword)))
 
   /**
    * A list of all tweets mentioning a keyword from either apple or google,

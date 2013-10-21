@@ -7,7 +7,7 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class TweetSetSuite extends FunSuite {
   trait TestSets {
-    val set1 = new Empty
+    val set1 = new Empty(0)
     val set2 = set1.incl(new Tweet("a", "a body", 20))
     val set3 = set2.incl(new Tweet("b", "b body", 20))
     val c = new Tweet("c", "c body", 7)
@@ -42,7 +42,7 @@ class TweetSetSuite extends FunSuite {
       assert(size(set5.filter(tw => tw.retweets == 20)) === 2)
     }
   }
-  
+
   test("filter: retweets < 20 times on set5") {
     new TestSets {
       assert(size(set5.filter(tw => tw.retweets < 20)) === 2)
@@ -67,42 +67,42 @@ class TweetSetSuite extends FunSuite {
     }
   }
 
-  
+
   test("mostRetweeted throws an exception on an empty set") {
     intercept[NoSuchElementException] {
-      new Empty().mostRetweeted
+      new Empty(0).mostRetweeted
     }
   }
-  
-  
+
+
   test("mostRetweeted on non-empty set with duplicates") {
     new TestSets {
       assert(set5.mostRetweeted.retweets === 20)
     }
   }
-  
+
   test("mostRetweeted on non-empty set without duplicates") {
-    new TestSets {      
-      assert(new Empty().incl(new Tweet("a", "a body", 12)).incl(new Tweet("b", "b body", 5)).mostRetweeted.retweets === 12)
+    new TestSets {
+      assert(new Empty(0).incl(new Tweet("a", "a body", 12)).incl(new Tweet("b", "b body", 5)).mostRetweeted.retweets === 12)
     }
   }
-  
+
   test("mostRetweeted on non-empty set without duplicates different order") {
     new TestSets {
-      assert(new Empty().incl(new Tweet("a", "a body", 5)).incl(new Tweet("b", "b body", 12)).mostRetweeted.retweets === 12)
+      assert(new Empty(0).incl(new Tweet("a", "a body", 5)).incl(new Tweet("b", "b body", 12)).mostRetweeted.retweets === 12)
     }
   }
-  
+
   test("mostRetweeted on non-empty set with a tricky order") {
     new TestSets {
-      assert(new Empty()
+      assert(new Empty(0)
           .incl(new Tweet("a", "3", 3)).incl(new Tweet("a", "2", 9))
           .incl(new Tweet("a", "1", 1)).incl(new Tweet("a", "4", 1))
           .incl(new Tweet("a", "5", 4))
           .mostRetweeted.retweets === 9)
     }
   }
-  
+
   test("descending: set6") {
     new TestSets {
       val trends = set5.incl(new Tweet("z", "err", 13)).descendingByRetweet
@@ -110,7 +110,7 @@ class TweetSetSuite extends FunSuite {
       assert(trends.head.user == "a" || trends.head.user == "b")
     }
   }
-  
+
   test("descending: empty set is empty set") {
     new TestSets {
       val trends = set1.descendingByRetweet
