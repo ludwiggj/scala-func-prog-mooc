@@ -1,42 +1,34 @@
-package week4.variance
+package main.week4.variance
 
-class IntSet {
-  override def toString = "IntSet"
-}
-class NonEmpty extends IntSet {
-  override def toString = "NonEmpty"
-}
-class Empty extends IntSet {
-  override def toString = "Empty"
-}
+import main.week4.covariance._
 
 object ListVariance {
   def main(args: Array[String]) {
-    // +T is covariant, so List[Nothing] <: List[String] 
+    // +T is covariant, so List[Nothing] <: List[String]
     //                  because Nothing <: String
-    
-    val x: List[String] = Nil                                  
+
+    val x: List[String] = Nil
 
     var list: List[NonEmpty] = new Concrete();
     println("List " + list)
     val prep1: IntSet = new IntSet
     println("About to prepend " + prep1)
-    
+
     val list1: List[IntSet] = list.prepend(prep1)
     println("List " + list1)
-    
+
     val prep2: NonEmpty = new NonEmpty
     println("About to prepend " + prep2)
     list = list.prepend(prep2)
     println("List " + list)
-    
-    
+
+
     val prep3: Empty = new Empty
     println("About to prepend " + prep3)
     var list2:List[IntSet] = list.prepend(prep3)
     println("List " + list2)
   }
-  
+
   def f(xs: List[NonEmpty], x: Empty):List[IntSet] = xs prepend x
 }
 
