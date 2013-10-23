@@ -29,12 +29,12 @@ object Huffman {
   def weight(tree: CodeTree): Int = tree match {
     case Fork(left, right, _, _) => weight(left) + weight(right)
     case Leaf(_, weight) => weight
-  }                                              
+  }
 
   def chars(tree: CodeTree): List[Char] = tree match {
     case Fork(left, right, _, _) => chars(left) ++ chars(right)
     case Leaf(char, _) => List(char)
-  } 
+  }
 
   def makeCodeTree(left: CodeTree, right: CodeTree) =
     Fork(left, right, chars(left) ::: chars(right), weight(left) + weight(right))
@@ -81,7 +81,7 @@ object Huffman {
     def calcTimes(chars: List[Char], acc: List[(Char, Int)]): List[(Char, Int)] = {
       chars match {
         case List() => acc
-        case ch :: tail => calcTimes(chars.filter(x => x != ch), (ch, chars.count(x => x == ch)) :: acc)
+        case ch :: tail => calcTimes(chars.filter(_ != ch), (ch, chars.count(_ == ch)) :: acc)
       }
     }
     calcTimes(chars, List())
@@ -99,12 +99,12 @@ object Huffman {
       case List() => List()
       case y :: ys => insert(y, isort(ys))
     }
-  
+
     def insert(x: (Char, Int), xs: List[(Char, Int)]): List[(Char, Int)] = xs match {
       case List() => List(x)
       case y :: ys => if (x._2 > y._2) y :: insert(x, ys) else x :: xs
     }
-    
+
     isort(freqs).map(x => Leaf(x._1, x._2))
   }
 
@@ -130,7 +130,7 @@ object Huffman {
       case List() => List(x)
       case y :: ys => if (weight(x) > weight(y)) y :: insert(x, ys) else x :: xs
     }
-     
+
     trees match {
       case tree1 :: tree2 :: xs => insert(makeCodeTree(tree1, tree2), xs)
       case _ => trees
@@ -154,17 +154,16 @@ object Huffman {
    *    the example invocation. Also define the return type of the `until` function.
    *  - try to find sensible parameter names for `xxx`, `yyy` and `zzz`.
    */
-  def until(finished: List[CodeTree] => Boolean, combine: List[CodeTree] => List[CodeTree])(trees: List[CodeTree]): List[CodeTree] = {
+  type OptimalTreeType = List[CodeTree] => Boolean
+  type TreeCombinerType = List[CodeTree] => List[CodeTree]
+
+  def until(finished: OptimalTreeType, combine: TreeCombinerType)(trees: List[CodeTree]): List[CodeTree] = {
     trees match {
       case List() => trees
       case _ => if (finished(trees)) trees else until(finished, combine)(combine(trees))
     }
   }
 
-  
-//    def singleton(trees: List[CodeTree]): Boolean = (trees.length == 1)
-
-  
   /**
    * This function creates a code tree which is optimal to encode the text `chars`.
    *
@@ -172,7 +171,7 @@ object Huffman {
    * frequencies from that text and creates a code tree based on them.
    */
   def createCodeTree(chars: List[Char]): CodeTree = {
-    until(singleton, combine)(makeOrderedLeafList(times(chars)))(0)
+    (until(singleton, combine)(makeOrderedLeafList (times (chars)))) head
   }
 
 
@@ -186,19 +185,19 @@ object Huffman {
    * the resulting list of characters.
    */
   def decode(tree: CodeTree, bits: List[Bit]): List[Char] = {
-    def decodeBits(bits:List[Bit], acc: List[Char], currentNode: CodeTree): List[Char] = {
+    def decodeBits(currentNode: CodeTree, bits: List[Bit], acc: List[Char]): List[Char] = {
       bits match {
+        case bit :: tail => currentNode match {
+          case Fork(left, right, _, _) => if (bit == 0) decodeBits(left, tail, acc) else decodeBits(right, tail, acc)
+          case Leaf(char, _) => decodeBits(tree, bits, char :: acc)
+        }
         case List() => currentNode match {
           case Leaf(char, _) => char :: acc
-          case _ => acc
-        }
-        case bit :: tail => currentNode match {
-          case Fork(left, right, _, _) => if (bit == 0) decodeBits(tail, acc, left) else decodeBits(tail, acc, right)   
-          case Leaf(char, _) => decodeBits(bits, char :: acc, tree)
+          case _ => throw new Exception("Error during decoding")
         }
       }
     }
-    decodeBits(bits, List(), tree).reverse
+    decodeBits(tree, bits, List()).reverse
   }
 
   /**
@@ -232,14 +231,14 @@ object Huffman {
           if (! nodeChars.contains(chToEncode)) throw new IllegalArgumentException("Character " + chToEncode + " not found in tree")
           if (chars(left).contains(chToEncode)) encodeChar(chToEncode, 0 :: path, left) else encodeChar(chToEncode, 1 :: path, right)
         }
-        case Leaf(ch, _) => {
+        case Leaf(_, _) => {
           path.reverse
         }
       }
     }
-    text.map(x => encodeChar(x, List(), tree)).flatten      
+    text.map(x => encodeChar(x, List(), tree)).flatten
   }
-  
+
   // Part 4b: Encoding using code table
 
   type CodeTable = List[(Char, List[Bit])]
@@ -279,13 +278,7 @@ object Huffman {
    * on the two parameter code tables.
    */
   def mergeCodeTables(a: CodeTable, b: CodeTable): CodeTable = {
-    def doMerge(table: CodeTable, acc: CodeTable): CodeTable = {
-      table match {
-        case List() => acc
-        case head :: tail => doMerge(tail, head :: acc)
-      }
-    }
-    doMerge(a.reverse, b)
+    a ++ b
   }
 
   /**
@@ -301,7 +294,7 @@ object Huffman {
         case ch :: tail => encode(codeTable, tail, acc ++ codeBits(codeTable)(ch))
       }
     }
-  
+
     encode(convert(tree), text, List())
   }
 }
