@@ -25,6 +25,15 @@ object folder {
 
   def product_R2(xs: List[Int]) = foldRight(1)(xs)(_ * _)
 
+  def reverse[T](xs: List[T]): List[T] =
+    foldLeft (List[T]())(xs)((xs, x) => x :: xs)
+
+  def mapFun[T, U](xs: List[T], f: T => U): List[U] =
+    foldRight (List[U]())(xs)((x, xs) => f(x) :: xs)
+
+  def lengthFun[T](xs: List[T]): Int =
+    foldRight (0)(xs)((x, y) => y + 1)
+
   def reduceLeft[T](list: List[T])(op: (T, T) => T): T = list match {
     case Nil => throw new Error("Nil.reduceLeft")
     case x :: xs => foldLeft(x)(xs)(op)
@@ -61,7 +70,7 @@ object folder {
 
   // Following version of concat does not compile
   //
-  // foldLeft(acc)(List(x1, ..., xn))(op) = ( ... (z op x1) op ... ) op xn
+  // foldLeft(z)(List(x1, ..., xn))(op) = ( ... (z op x1) op ... ) op xn
   //
   // Which translates into...
   //
@@ -116,5 +125,12 @@ object folder {
 
     println(concat_R(List(1, 2, 3), List(4, 5, 6)))
     println(concat_L(List(1, 2, 3), List(4, 5, 6)))
+
+    println(reverse(List(9,8,7,6,5,4,3,2,1)))
+
+    def intToTuple(x: Int): (Int, Int) = (x, x)
+
+    println(mapFun(List(5,3,1), intToTuple))
+    println(lengthFun(List(5,3,"1, 6, 5", "6")))
   }
 }

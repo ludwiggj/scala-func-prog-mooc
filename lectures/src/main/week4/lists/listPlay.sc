@@ -12,6 +12,7 @@ val grid = List(List(0,0,1), List(0,1,0), List(1,0,0))
 val anotherGrid = (0 :: 0 :: 1 :: Nil) :: (0 :: 1 :: 0 :: Nil) :: (1 :: 0 :: 0 :: Nil) :: Nil
 
 
+
 val flattenedGrid = (0 :: 0 :: 1 :: Nil) ::: (0 :: 1 :: 0 :: Nil) ::: (1 :: 0 :: 0 :: Nil) ::: Nil
 
 
@@ -39,7 +40,11 @@ isItEmpty.head.isEmpty
 // <console>:8: error: value :: is not a member of Int
 //(55 :: 66) ::: Nil
 (55 :: 66 :: Nil) ::: Nil
-Nil
-Nil :: Nil
-Nil ::: Nil
-(Nil :: Nil) ::: Nil
+
+Nil // = List()
+// :: adds an element at the beginning of this list.
+Nil :: Nil // = List(List())
+// ::: adds the elements of a given list in front of this list.
+Nil ::: Nil // = List()
+(Nil :: Nil) ::: Nil // = List(List())
+1 :: 2 :: 3 :: Nil // = List(1,2,3)
