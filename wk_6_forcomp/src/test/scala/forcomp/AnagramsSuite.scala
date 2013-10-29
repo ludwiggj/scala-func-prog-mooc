@@ -29,11 +29,11 @@ class AnagramsSuite extends FunSuite {
   test("dictionaryByOccurrences.get: eat") {
     assert(dictionaryByOccurrences.get(List(('a', 1), ('e', 1), ('t', 1))).map(_.toSet) === Some(Set("ate", "eat", "tea")))
   }
-  
+
   test("dictionaryByOccurrences.get: bleat") {
     assert(dictionaryByOccurrences.get(List(('a', 1), ('b', 1), ('e', 1), ('l', 1), ('t', 1))).map(_.toSet) === Some(Set("bleat", "table")))
   }
-  
+
   test("dictionaryByOccurrences.get: zzzzzz") {
     assert(dictionaryByOccurrences.get(List(('z', 6))).map(_.toSet) === None)
   }
@@ -50,29 +50,36 @@ class AnagramsSuite extends FunSuite {
     assert(wordAnagrams("madeUpWord").toSet === Set())
   }
 
+  type subtractor = (Occurrences, Occurrences) => Occurrences
+
+  val subtractors: List[subtractor] = List(subtract, subtract2, subtract3)
+
   test("subtract: lard - r") {
     val lard = List(('a', 1), ('d', 1), ('l', 1), ('r', 1))
     val r = List(('r', 1))
     val lad = List(('a', 1), ('d', 1), ('l', 1))
-    assert(subtract(lard, r) === lad)
-  }
-  
-  test("subtract: lard - lard") {
-    val lard = List(('a', 1), ('d', 1), ('l', 1), ('r', 1))
-    val lardAgain = List(('a', 1), ('d', 1), ('l', 1), ('r', 1))
-    val nowt = List()
-    val result = subtract(lard, lardAgain) 
-    assert(result === nowt)
-    assert(result.isEmpty == true)
+    subtractors.foreach(f => assert(f(lard, r) === lad))
   }
 
-  test("subtraction maintains order") {
+  test("subtract: larder - r") {
+    val larder = List(('a', 1), ('d', 1), ('e', 1), ('l', 1), ('r', 2))
+    val r = List(('r', 1))
+    val larde = List(('a', 1), ('d', 1), ('e', 1), ('l', 1), ('r', 1))
+    subtractors.foreach(f => assert(f(larder, r) === larde))
+  }
+
+  test("subtract: lard - lard") {
+    val lard = List(('a', 1), ('d', 1), ('l', 1), ('r', 1))
+    subtractors.foreach(f => assert(f(lard, lard) === List()))
+  }
+
+  test("subtract maintains order") {
     val Linux_rulez = List(('e', 1), ('i', 1), ('l', 2), ('n', 1), ('r', 1), ('u', 2), ('x', 1), ('z', 1))
     val rulez = List(('e', 1), ('l', 1), ('r', 1), ('u', 1), ('z', 1))
     val Linux = List(('i', 1), ('l', 1), ('n', 1), ('u', 1), ('x', 1))
-    assert(subtract(Linux_rulez, rulez) === Linux)
+    subtractors.foreach(f => assert(f(Linux_rulez, rulez) === Linux))
   }
-    
+
   test("combinations: []") {
     assert(combinations(Nil) === List(Nil))
   }
@@ -123,8 +130,8 @@ class AnagramsSuite extends FunSuite {
       List("Linux", "rulez")
     )
     assert(sentenceAnagrams(sentence).toSet === anas.toSet)
-  } 
-  
+  }
+
   test("sentence anagrams: Yes man") {
     val sentence = List("Yes", "man")
     val anas = List(
@@ -144,5 +151,5 @@ class AnagramsSuite extends FunSuite {
       List("yes", "man")
     )
     assert(sentenceAnagrams(sentence).toSet === anas.toSet)
-  } 
+  }
 }
