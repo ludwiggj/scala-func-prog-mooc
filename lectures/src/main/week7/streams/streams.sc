@@ -3,10 +3,15 @@ object streams {
     if (lo >= hi) Stream.empty
     else Stream.cons(lo, streamRange(lo + 1, hi))
 
+  def streamRange2(lo: Int, hi: Int): Stream[Int] = {
+    println(lo + " ")
+    if (lo >= hi) Stream.empty
+    else Stream.cons(lo, streamRange2(lo + 1, hi))
+  }
+
   def listRange(lo: Int, hi: Int): List[Int] =
     if (lo >= hi) Nil
     else lo :: listRange(lo + 1, hi)
-
   Stream.empty
   Stream.cons(1, Stream.cons(2, Stream.empty))
   Stream(1, 2)
@@ -39,4 +44,7 @@ object streams {
   z
   (z take 4).toList
   z
+  streamRange2(1, 10)
+  streamRange2(1, 10).take(3)
+  streamRange2(1, 10).take(3).toList
 }
