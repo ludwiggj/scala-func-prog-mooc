@@ -45,6 +45,16 @@ object streams {
   (z take 4).toList
   z
   streamRange2(1, 10)
+
   streamRange2(1, 10).take(3)
+
   streamRange2(1, 10).take(3).toList
+
+
+
+
+  val zz = streamRange(1,10)
+  zz.take(3).toList
+  zz.head
+  zz.tail
 }
