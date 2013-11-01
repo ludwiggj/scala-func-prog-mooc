@@ -1,10 +1,17 @@
 package main.week7.water_pouring
 
-class Pouring(capacity: Vector[Int]) {
+class Pouring(glassCapacities: Vector[Int]) {
 
-  // states
-  type State = Vector[Int]
-  val initialState = capacity map (x => 0)
+  // Glass: Int (glass identifier)
+  // State: Vector[Int], one entry per glass, current capacity of glass
+  // Moves:
+
+  // Empty(glass) - completely empty a glass
+  // Fill(glass) - completely fill a glass
+  // Pour(from, to) - pour contents of from glass into to glass, until either from glass is empty, or to glass is full
+  //                  (whichever occurs first)
+
+  val initialState = glassCapacities map (x => 0)
 
   // moves
   trait Move {
@@ -12,40 +19,36 @@ class Pouring(capacity: Vector[Int]) {
   }
 
   case class Empty(glass: Int) extends Move {
-    def change(state: State) = state updated (glass, 0)
+    def change(state: State) = state updated(glass, 0)
   }
+
   case class Fill(glass: Int) extends Move {
-    def change(state: State) = state updated (glass, capacity(glass))
+    def change(state: State) = state updated(glass, glassCapacities(glass))
   }
+
   case class Pour(from: Int, to: Int) extends Move {
-    def change(state: State) =
-      //state
-    {
-      val amount = state(from) min (capacity(to) - state(to))
-      state updated (from, state(from) - amount) updated (to, state(to) + amount)
+    def change(state: State) = {
+      val amount = state(from) min (glassCapacities(to) - state(to))
+      state updated(from, state(from) - amount) updated(to, state(to) + amount)
     }
   }
 
-  val glasses = 0 until capacity.length
+  val glasses = 0 until glassCapacities.length
 
   val moves: Seq[Move] =
     (for (g <- glasses) yield Empty(g)) ++
-    (for (g <- glasses) yield Fill(g)) ++
-    (for (from <- glasses; to <- glasses if from != to) yield Pour(from, to))
+      (for (g <- glasses) yield Fill(g)) ++
+      (for (from <- glasses; to <- glasses if from != to) yield Pour(from, to))
 
-  class Path(history: List[Move], val endState: State) {
-
-    //def endState: State = trackState(history)
-    //private def trackState(xs: List[Move]): State = xs match {
-    //  case Nil => initialState
-    //  case move :: xs1 => move change trackState(xs1)
-    //}
-
-    // Terser version:
-    //def endState: State = (history foldRight initialState) (_ change _)
-
+  case class Path(history: List[Move], val endState: State) {
     def extend(move: Move) = new Path(move :: history, move change endState)
+
     override def toString = (history.reverse mkString " ") + "---> " + endState
+
+    override def equals(o: Any) = o match {
+      case that: Path => that.history.equals(this.history) && that.endState.equals(this.endState)
+      case _ => false
+    }
   }
 
   val initialPath = new Path(Nil, initialState)
@@ -54,19 +57,19 @@ class Pouring(capacity: Vector[Int]) {
     if (paths.isEmpty) Stream.empty
     else {
       val more = for {
-        path <- paths
-        next <- moves map path.extend // calls path.extend on each move to generate a new path
-        if !(explored contains next.endState)
-      } yield next
+        currentPath <- paths
+        nextPath <- moves map currentPath.extend // calls path.extend on each move to generate a new path
+        if !(explored contains nextPath.endState)
+      } yield nextPath
       paths #:: from(more, explored ++ (more map (_.endState)))
     }
 
   val pathSets = from(Set(initialPath), Set(initialState))
 
-  def solutions(target: Int): Stream[Path] =
+  def solutions(targetCapacity: Int): Stream[Path] =
     for {
       pathSet <- pathSets
       path <- pathSet
-      if path.endState contains target
+      if path.endState contains targetCapacity
     } yield path
 }
