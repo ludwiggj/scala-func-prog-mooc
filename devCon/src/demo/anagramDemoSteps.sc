@@ -2,10 +2,9 @@
 import demo.Anagrams._
 
 // The sentence we shall work on is...
-// "Ernie is evil"
+"Ernie is evil"
 
 // Word occurrencies
-List("Ernie", "lives", "on", "Sesame", "Street", "with", "his", "friend", "Burt") groupBy ((s: String) => s.length)
 "Ernie".toLowerCase groupBy ((ch: Char) => ch)
 wordOccurrences("Ernie")
 
@@ -30,4 +29,5 @@ wordOccurrences("Ernie")
 subtract(sentenceOccurrences(List("Ernie", "is", "evil")), wordOccurrences("Ernie"))
 
 // sentence anagrams
-sentenceAnagrams(List("Ernie", "is", "evil"))
+sentenceAnagrams(List("Ernie", "is", "evil")).filter(_.contains("reel"))
+

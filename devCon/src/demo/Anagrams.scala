@@ -2,7 +2,7 @@ package demo
 
 import common._
 
-class Anagrams { }
+class Anagrams {}
 
 object Anagrams {
 
@@ -52,11 +52,12 @@ object Anagrams {
     *
     */
   lazy val dictionaryByOccurrences: Map[Occurrences, List[Word]] =
-    dictionary groupBy wordOccurrences withDefaultValue (List())
+    dictionary groupBy wordOccurrences withDefaultValue List()
 
   /** Returns all the anagrams of a given word. */
   def wordAnagrams(word: Word): List[Word] =
-    dictionaryByOccurrences.get(wordOccurrences(word)) getOrElse (List())
+//    dictionaryByOccurrences.get(wordOccurrences(word)) getOrElse (List())
+    dictionaryByOccurrences(wordOccurrences(word))
 
   /** Returns the list of all subsets of the occurrence list.
     * This includes the occurrence itself, i.e. `List(('k', 1), ('o', 1))`
@@ -65,21 +66,22 @@ object Anagrams {
     * Example: the subsets of the occurrence list `List(('a', 2), ('b', 2))` are:
     *
     * List(List(),
-    *      List(('a', 1)), List(('a', 2)), List(('b', 1)), List(('b', 2)),
-    *      List(('a', 1), ('b', 1)), List(('a', 2), ('b', 1)), List(('a', 1), ('b', 2)), List(('a', 2), ('b', 2))
+    * List(('a', 1)), List(('a', 2)), List(('b', 1)), List(('b', 2)),
+    * List(('a', 1), ('b', 1)), List(('a', 2), ('b', 1)), List(('a', 1), ('b', 2)), List(('a', 2), ('b', 2))
     * )
     *
     * Note that the order of the occurrence list subsets does not matter.
     */
   def combinations(occurrences: Occurrences): List[Occurrences] = {
-    if (occurrences isEmpty) List(List())
-    else {
-      val (headCh, headCount) = (occurrences head)
-      val combis = for {
-        chosenCount <- 0 to headCount
-        tailSolution <- combinations(occurrences tail)
-      } yield if (chosenCount > 0) (headCh, chosenCount) :: tailSolution else tailSolution
-      combis.toList
+    occurrences match {
+      case Nil => List(List())
+      case (headCh, headCount) :: tail => {
+        val combis = for {
+          chosenCount <- 0 to headCount
+          tailSolution <- combinations(tail)
+        } yield if (chosenCount > 0) ((headCh, chosenCount) :: tailSolution) else tailSolution
+        combis.toList
+      }
     }
   }
 
@@ -94,9 +96,9 @@ object Anagrams {
 
   def subtract(x: Occurrences, y: Occurrences): Occurrences = {
     y.toMap.foldLeft(x.toMap) {
-      case (xMap, (k, v)) => {
-        val remainingCount = xMap(k) - v
-        if (remainingCount == 0) xMap - k else xMap.updated(k, v)
+      case (xMap, (char, currentCount)) => {
+        val newCount = xMap(char) - currentCount
+        if (newCount == 0) (xMap - char) else xMap.updated(char, currentCount)
       }
     }.toList.sorted
   }
@@ -143,21 +145,15 @@ object Anagrams {
     */
   def sentenceAnagrams(sentence: Sentence): List[Sentence] = {
     def findAnagram(occurrences: Occurrences): List[Sentence] = {
-      if (occurrences isEmpty) {
-        List(Nil)
-      } else {
-        for {
+      occurrences match {
+        case Nil => List(List())
+        case _ => for {
           combination <- combinations(occurrences)
           word <- dictionaryByOccurrences(combination)
-          sentence <- findAnagram(subtract(occurrences, wordOccurrences(word)))
-        } yield (word :: sentence)
+          restOfSentence <- findAnagram(subtract(occurrences, wordOccurrences(word)))
+        } yield (word :: restOfSentence)
       }
     }
-
-    if (sentence isEmpty) {
-      List(Nil)
-    } else {
-      findAnagram(sentenceOccurrences(sentence))
-    }
+    findAnagram(sentenceOccurrences(sentence))
   }
 }

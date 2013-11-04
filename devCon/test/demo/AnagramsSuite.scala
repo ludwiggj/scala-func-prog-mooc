@@ -27,10 +27,10 @@ class AnagramsSuite extends FunSuite {
   }
 
   test("wordOccurrences: Robert") {
-    new TestData {
-      assert(wordOccurrences("Robert") === List(('b', 1), ('e', 1), ('o', 1), ('r', 2), ('t', 1)))
+      new TestData {
+        assert(wordOccurrences("Robert") === List(('b', 1), ('e', 1), ('o', 1), ('r', 2), ('t', 1)))
+      }
     }
-  }
 
   test("sentenceOccurrences: abcd e") {
     new TestData {
@@ -43,6 +43,12 @@ class AnagramsSuite extends FunSuite {
     new TestData {
       assert(sentenceOccurrences(List("Ro", "ber", "t"))
         === List(('b', 1), ('e', 1), ('o', 1), ('r', 2), ('t', 1)))
+    }
+  }
+
+  test("sentenceOccurrences: [Empty List]") {
+    new TestData {
+      assert(sentenceOccurrences(List()) === List())
     }
   }
 
