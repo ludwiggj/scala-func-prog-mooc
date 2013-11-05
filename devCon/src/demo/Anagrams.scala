@@ -98,7 +98,7 @@ object Anagrams {
     y.toMap.foldLeft(x.toMap) {
       case (xMap, (char, currentCount)) => {
         val newCount = xMap(char) - currentCount
-        if (newCount == 0) (xMap - char) else xMap.updated(char, currentCount)
+        if (newCount == 0) (xMap - char) else xMap.updated(char, newCount)
       }
     }.toList.sorted
   }

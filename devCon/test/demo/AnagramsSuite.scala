@@ -114,6 +114,12 @@ class AnagramsSuite extends FunSuite {
     }
   }
 
+  test("ernie is evil") {
+    val ernieIsEvil = List(('e', 3), ('i', 3), ('l', 1), ('n', 1), ('r', 1), ('s', 1), ('v', 1))
+    val ernie = List(('e', 2), ('i', 1), ('n', 1), ('r', 1))
+    assert(subtract(ernieIsEvil, ernie) === List(('e', 1), ('i', 2), ('l', 1), ('s', 1), ('v', 1)))
+  }
+
   test("combinations: []") {
     new TestData {
       assert(combinations(Nil) === List(Nil))
