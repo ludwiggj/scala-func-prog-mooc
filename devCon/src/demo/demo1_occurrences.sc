@@ -1,17 +1,26 @@
 package demo
 
-import demo.Anagrams._
-
 object demo1_occurrences {
+  type Word = String
+  type Sentence = List[Word]
+  type Occurrences = List[(Char, Int)]
 
-  // The sentence we shall work on is...
-  "Ernie is evil"
-
-  // Word occurrencies
+  // Word occurrencies - step 1
   "Ernie".toLowerCase groupBy ((ch: Char) => ch)
+
+  // Function - wordOccurrences
+  def wordOccurrences(w: Word): Occurrences = {
+    val countMap = (w.toLowerCase groupBy ((ch: Char) => ch)) map {
+      case (ch, occurrences) => (ch, occurrences length)
+    }
+    countMap.toList.sorted
+  }
+
+  // Function - sentenceOccurrences
+  def sentenceOccurrences(s: Sentence): Occurrences
+     = wordOccurrences(s mkString)
 
   wordOccurrences("Ernie")
 
-  // Sentence occurrences
   sentenceOccurrences(List("Ernie", "is", "evil"))
 }
