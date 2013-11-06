@@ -14,15 +14,4 @@ object maps {
   capitalOfCountryWithDefault("England")
 
   capitalOfCountryWithDefault("France")
-
-  capitalOfCountry.foldLeft("") {
-    case (acc, (country, capital))
-      => (acc
-            + "(Country[" + country + "]"
-            + ", Capital[" + capital + "]) ")
-  }
-
-  capitalOfCountry - "England"
-
-  capitalOfCountry.updated("US", "Puerto Angeles")
 }

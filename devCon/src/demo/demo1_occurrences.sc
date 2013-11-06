@@ -16,11 +16,12 @@ object demo1_occurrences {
     countMap.toList.sorted
   }
 
+  wordOccurrences("Ernie")
+
   // Function - sentenceOccurrences
   def sentenceOccurrences(s: Sentence): Occurrences
      = wordOccurrences(s mkString)
 
-  wordOccurrences("Ernie")
 
   sentenceOccurrences(List("Ernie", "is", "evil"))
 }

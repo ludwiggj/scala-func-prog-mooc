@@ -6,6 +6,7 @@ object demo5_sentenceAnagrams {
 
   // Function - sentenceAnagrams
   def sentenceAnagrams(sentence: Sentence): List[Sentence] = {
+
     def findAnagram(occurrences: Occurrences): List[Sentence] = {
       occurrences match {
         case Nil => List(List())
@@ -16,6 +17,7 @@ object demo5_sentenceAnagrams {
         } yield (word :: restOfSentence)
       }
     }
+
     findAnagram(sentenceOccurrences(sentence))
   }
 
