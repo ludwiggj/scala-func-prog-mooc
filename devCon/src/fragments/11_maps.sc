@@ -1,4 +1,4 @@
-// 12 - maps
+// 11 - maps
 
 object maps {
   val capitalOfCountry =
@@ -14,9 +14,6 @@ object maps {
   capitalOfCountryWithDefault("England")
 
   capitalOfCountryWithDefault("France")
-
-  val map123 =
-    Map(1 -> "One", 2 -> "Two", 3 -> "Three")
 
   capitalOfCountry.foldLeft("") {
     case (acc, (country, capital))

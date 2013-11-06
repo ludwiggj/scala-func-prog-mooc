@@ -1,4 +1,4 @@
-// 10 Point and line pattern match
+// bonus - Point and line pattern match
 
 trait GeometricEntity
 
@@ -41,5 +41,5 @@ object pointAndLinePatternMatch {
 
   whatAmI(GeometricLine(GeometricPoint(0, 0),
                         GeometricPoint(6, 6)))    //> res5: String = A line not parallel to the x axis nor parallel to the y axis
-                                                  //| 
+                                                  //|
 }
