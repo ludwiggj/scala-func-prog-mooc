@@ -30,7 +30,7 @@ package object common {
    */
   def resourceAsStreamFromSrc(resourcePath: List[String]): Option[java.io.InputStream] = {
     val classesDir = new File(getClass.getResource(".").toURI)
-    val projectDir = classesDir.getParentFile.getParentFile.getParentFile.getParentFile
+    val projectDir = classesDir.getParentFile.getParentFile.getParentFile
     val resourceFile = subFile(projectDir, ("devCon" :: "src" :: "resources" :: resourcePath): _*)
     if (resourceFile.exists)
       Some(new java.io.FileInputStream(resourceFile))

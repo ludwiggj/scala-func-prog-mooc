@@ -1,12 +1,13 @@
 // 04 - Function returning a function
 
-def adder = (n: Int) => { (x: Int) => x + n }
+object functionReturningAFunction {
+  def adder = (n: Int) => { (x: Int) => x + n }
 
-def add3 = adder(3)
+  def add3 = adder(3)
 
-add3(2)
+  add3(2)
 
-def add10 = adder(10)
+  def add10 = adder(10)
 
-add10(2)
-
+  add10(2)
+}

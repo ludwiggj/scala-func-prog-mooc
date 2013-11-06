@@ -1,4 +1,4 @@
-object calculator2 {
+ object calculator2 {
 
   // introduction of function type
   type termTransformer = (Int => Int)

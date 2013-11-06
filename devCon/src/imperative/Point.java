@@ -1,4 +1,4 @@
-package fragments;
+package imperative;
 
 public class Point {
   private final int x;
@@ -41,5 +41,6 @@ public class Point {
     System.out.println(p_1_0);
     System.out.println(p_1_2);
     System.out.println("p_1_0 == p_1_2 ? [" + p_1_0.equals(p_1_2) + "]");
+    System.out.println("p_1_0 == p_1_0 ? [" + p_1_0.equals(new Point(1,0)) + "]");
   }
 }

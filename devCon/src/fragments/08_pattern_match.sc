@@ -1,21 +1,24 @@
 // 08 - pattern match
-val numberList = List(9, -7, 2)
 
-// double via pattern matching and list cons
-//Remember, numberList can be represented as...
+object patternMatch {
+  val numberList = List(9, -7, 2)
 
-//  9 :: -7 :: 2 :: Nil
-def doubleList(xs: List[Int]): List[Int] = xs match {
-   case Nil => Nil
-   case y :: ys => (2 * y) :: doubleList(ys)
+  // double via pattern matching and list cons
+
+  //Remember, numberList can be represented as...
+  //  9 :: -7 :: 2 :: Nil
+
+  def doubleList(xs: List[Int]): List[Int] = xs match {
+    case Nil => Nil
+    case y :: ys => (2 * y) :: doubleList(ys)
+  }
+
+  doubleList(numberList)
 }
-
-doubleList(numberList)
-
   /*
   How does this work?
 
-  doubleList(List(9, -7, 2))
+              doubleList(List(9, -7, 2))
 
 step 1     => doubleList(9 :: -7 :: 2 :: Nil)
 

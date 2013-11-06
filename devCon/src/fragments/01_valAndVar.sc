@@ -1,11 +1,17 @@
 // 01 - Vals & Vars
 
-var iCanChange: Double = 8.7
-val iCannotChange: Int = 6
-// This is allowed...
-iCanChange = iCanChange + 1
+object valAndVars {
 
-// This isn't
-iCannotChange = iCannotChange + 1
+  var iCanChange: Double = 8.9
 
+  // This is allowed...
 
+  iCanChange = iCanChange + 2
+  val hasItChanged = iCanChange
+
+  // This isn't
+
+  val iCannotChange: Int = 6
+
+  // iCannotChange = iCannotChange + 1
+}

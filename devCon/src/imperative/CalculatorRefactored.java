@@ -1,4 +1,4 @@
-package calculator.imperative;
+package imperative;
 
 public class CalculatorRefactored {
   public static int sum(Functor f, int a, int b) {

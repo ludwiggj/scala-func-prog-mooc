@@ -1,6 +1,7 @@
 package demo
 
 import common._
+import scala.language.postfixOps
 
 class Anagrams {}
 
