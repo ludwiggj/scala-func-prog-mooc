@@ -11,7 +11,7 @@ object demo1_occurrences {
   // Function - wordOccurrences
   def wordOccurrences(w: Word): Occurrences = {
     val countMap = (w.toLowerCase groupBy ((ch: Char) => ch)) map {
-      case (ch, occurrences) => (ch, occurrences length)
+      case (key, value) => (key, value length)
     }
     countMap.toList.sorted
   }
@@ -21,7 +21,6 @@ object demo1_occurrences {
   // Function - sentenceOccurrences
   def sentenceOccurrences(s: Sentence): Occurrences
      = wordOccurrences(s mkString)
-
 
   sentenceOccurrences(List("Ernie", "is", "evil"))
 }

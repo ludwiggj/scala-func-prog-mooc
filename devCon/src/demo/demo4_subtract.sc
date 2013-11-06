@@ -6,15 +6,10 @@ object demo4_subtract {
   // subtract
   sentenceOccurrences(List("Ernie", "is", "evil"))
 
-  wordOccurrences("Ernie")
+  wordOccurrences("leer")
 
   subtract(
     sentenceOccurrences(List("Ernie", "is", "evil")),
-    wordOccurrences("Ernie")
-  )
-
-  subtract(
-    sentenceOccurrences(List("Ernie", "is", "evil")),
-    sentenceOccurrences(List("Ernie", "is", "evil"))
+    wordOccurrences("leer")
   )
 }

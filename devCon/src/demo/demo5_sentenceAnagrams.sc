@@ -22,11 +22,10 @@ object demo5_sentenceAnagrams {
   }
 
   // sentence anagrams
-  sentenceAnagrams(List("Ernie", "is", "evil"))
+  lazy val anagrams =
+    sentenceAnagrams(List("Ernie", "is", "evil"))
 
-  sentenceAnagrams(List("Ernie", "is", "evil"))
-    .filter(_.contains("reel"))
+  anagrams.filter(_.contains("reel"))
 
-  sentenceAnagrams(List("Ernie", "is", "evil"))
-    .filter(_.forall(_.length() >= 4))
+  anagrams.filter(_.forall(_.length() >= 4))
 }
