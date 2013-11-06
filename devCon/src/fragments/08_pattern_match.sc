@@ -16,26 +16,24 @@ object patternMatch {
   doubleList(numberList)
 }
   /*
-  How does this work?
+           => doubleList(List(9, -7, 2))
 
-              doubleList(List(9, -7, 2))
+ [step 1]  => doubleList(9 :: -7 :: 2 :: Nil)
 
-step 1     => doubleList(9 :: -7 :: 2 :: Nil)
+ [step 2]  => case (9 :: (-7 :: 2 :: Nil))
 
-step 2     => case (9 :: (-7 :: 2 :: Nil))
+ [step 3]  => (2 * 9) :: doubleList(-7 :: 2 :: Nil)
 
-step 3     => (2 * 9) :: doubleList(-7 :: 2 :: Nil)
+ [step 4]  => 18 :: case (-7 :: (2 :: Nil))
 
-step 4     => 18 :: case (-7 :: (2 :: Nil))
+ [step 5]  => 18 :: (2 * -7) :: doubleList(2 :: Nil)
 
-step 5     => 18 :: (2 * -7) :: doubleList(2 :: Nil)
+ [step 6]  => 18 :: -14 :: case (2 :: Nil)
 
-step 6     => 18 :: -14 :: case (2 :: Nil)
+ [step 7]  => 18 :: -14 :: (2 * 2) :: doubleList(Nil)
 
-step 7     => 18 :: -14 :: (2 * 2) :: doubleList(Nil)
+ [step 8]  => 18 :: -14 :: 4 :: Nil
 
-step 8     => 18 :: -14 :: 4 :: Nil
-
-step 9     => List(18, -14, 4)
+ [step 9]  => List(18, -14, 4)
 
   */

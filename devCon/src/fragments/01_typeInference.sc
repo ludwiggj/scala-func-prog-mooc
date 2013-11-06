@@ -1,4 +1,4 @@
-// 02 - Type inference, and a simple method
+// 01 - Type inference, and a simple method
 
 object typeInferenceAndSimpleMethod {
   val x = 10

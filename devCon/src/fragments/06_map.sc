@@ -1,4 +1,4 @@
-// 07 - map
+// 06 - map
 
 object map {
 

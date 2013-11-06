@@ -3,7 +3,7 @@
 object fors {
   for (i <- 1 to 10) print(i + " ")
 
-  for (i <- 1 to 10; if i % 2 == 0)
+  for (i <- 1 to 10; if i % 2 == 0) print(i + " ")
 
   val x = for (i <- 1 to 10) yield i
 

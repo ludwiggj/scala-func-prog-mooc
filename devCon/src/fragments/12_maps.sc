@@ -1,22 +1,12 @@
-// 13 - maps
+// 12 - maps
 
 object maps {
   val capitalOfCountry =
     Map("US" -> "Washington", "England" -> "London")
 
-  def getCapital(country: String) =
-    capitalOfCountry.get(country) match {
-      case Some(capital) => capital
-      case None => "oops"
-    }
-
-  getCapital("US")
-
-  getCapital("France")
-
   capitalOfCountry("US")
 
-  //capitalOfCountry("France")
+  capitalOfCountry("France")
 
   val capitalOfCountryWithDefault =
     capitalOfCountry withDefaultValue "<unknown>"

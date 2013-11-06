@@ -14,11 +14,4 @@ object functionAsAnArgument {
 
   apply(subtract3, 7)
 
-  type operation = (Int) => (Int)
-
-  def applyOperation(f: operation, value: Int) = {
-    f(value)
-  }
-
-  applyOperation(add5, 2)
 }

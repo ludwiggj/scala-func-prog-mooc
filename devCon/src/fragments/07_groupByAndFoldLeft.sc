@@ -1,9 +1,9 @@
-// 12 - groupBy and foldLeft
+// 07 - groupBy and foldLeft
 
 object groupByAndFoldLeft {
 
   val sesameStreet: List[String] =
-    List("Erniez", "lives", "on", "Sesame", "Street", "with", "his", "friend", "Burt")
+    List("Ernie", "lives", "on", "Sesame", "Street", "with", "his", "friend", "Burt")
 
   sesameStreet groupBy (_.length)
 
@@ -13,13 +13,11 @@ object groupByAndFoldLeft {
 
   val numbers = List(1, 2, 3, 4, 5)
 
+  // Sum of numbers 1 to 5 ...
+  // = 0 + 1 + 2 + 3 + 4 + 5
   val sum = numbers.foldLeft(0)(_ + _)
 
-  // Translates to...
-  // 0 + 1 + 2 + 3 + 4 + 5
-
-  val product = numbers.foldLeft(1)(_ * _)
-
-  // Translates to...
+  // Product of numbers 1 to 5 ...
   // 1 * 1 * 2 * 3 * 4 * 5
+  val product = numbers.foldLeft(1)(_ * _)
 }
