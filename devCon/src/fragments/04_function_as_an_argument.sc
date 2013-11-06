@@ -1,6 +1,7 @@
-// 05 - A function as an argument, and function types
+// 04 - A function as an argument, and function types
 
 object functionAsAnArgument {
+
   def apply(f: (Int) => (Int), value: Int) = {
     f(value)
   }
@@ -13,11 +14,11 @@ object functionAsAnArgument {
 
   apply(subtract3, 7)
 
-  type op = (Int) => (Int)
+  type operation = (Int) => (Int)
 
-  def applyOp(f: op, value: Int) = {
+  def applyOperation(f: operation, value: Int) = {
     f(value)
   }
 
-  applyOp(add5, 2)
+  applyOperation(add5, 2)
 }

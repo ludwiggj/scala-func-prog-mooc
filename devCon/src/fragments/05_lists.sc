@@ -10,11 +10,8 @@ object lists {
 
   fruit.tail
 
-  fruit.tail.head
-
   fruit.tail.tail
 
   fruit.tail.tail.tail
 
-  fruit.tail.tail.tail.tail
 }
