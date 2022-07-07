@@ -1,8 +1,8 @@
-name := "fnProgramScala"
+ThisBuild / scalaVersion := "2.13.8"
 
-version := "0.1"
-
-scalaVersion := "2.13.5"
-
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.2" % "test"
-
+lazy val root = (project in file("."))
+  .settings(
+    name := "scala-func-prog-mooc",
+    libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",
+    libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.12" % "test"
+  )
